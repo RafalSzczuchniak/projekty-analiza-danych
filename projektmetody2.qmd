@@ -1,0 +1,855 @@
+---
+title: "Analiza wartości zawodników Ekstraklasy"
+author: "Rafał Szczuchniak"
+format:
+  html:
+    mainfont: "Montserrat"
+    theme: cosmo (HTML Theming – Quarto)
+    toc: true
+    toc-location: left
+    toc-title: "Spis treści"
+    toc-depth: 3
+    number-sections: false
+    smooth-scroll: true
+    fig-cap-location: bottom
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+# **Wprowadzenie**
+
+Rynek transferowy w piłce nożnej to złożony mechanizm, w którym na cenę zawodnika wpływa znacznie więcej niż tylko liczba strzelonych bramek. Ten projekt ma na celu dokładne prześwietlenie wycen w PKO BP Ekstraklasie i sprawdzenie, co tak naprawdę decyduje o wartości piłkarzy w naszej lidze.
+
+W przeciwieństwie do największych lig Europy, Ekstraklasa rządzi się swoimi prawami finansowymi. Polskie kluby muszą ciągle szukać równowagi między stawianiem na młodzież (przepis o młodzieżowcu) a ściąganiem doświadczonych graczy z zagranicy. Poniższa analiza sprawdza, która z tych strategii przynosi większą wartość rynkową oraz jak na cenę piłkarza wpływają jego podstawowe cechy: wiek, narodowość oraz pozycja na boisku.
+
+Najważniejszym celem badania jest odpowiedź na pytanie: czy rynek wycenia wyżej potencjał (młodość), czy sprawdzoną jakość (doświadczenie)? Sprawdzam również, jak liczba obcokrajowców w składzie wpływa na siłę i wartość całego zespołu. Używając wizualizacji danych, raport ma pokazać ciekawe i mniej znane zależności, jakimi kierują się polskie kluby.
+
+![](ekstraklasa.jpg){fig-align="center" width="527"}
+
+# **Pytania badawcze i hipotezy**
+
+### **1. Determinanty wartości rynkowej (Pozycja, Narodowość, Wiek)**
+
+**Pytanie badawcze***:* Jak pozycja na boisku, narodowość oraz wiek zawodnika wpływają na jego wycenę rynkową?
+
+-   **Hipoteza A (Pozycja):** Zawodnicy ofensywni osiągają wyższe wyceny rynkowe niż gracze defensywni, ponieważ ich wpływ na wynik meczu (bramki, asysty) jest bardziej wymierny i medialny.
+
+-   **Hipoteza B (Narodowość):** Zawodnicy zagraniczni charakteryzują się wyższą średnią wartością niż Polacy, ponieważ kluby decydują się na transfery zagraniczne głównie w przypadku graczy podnoszących jakość zespołu.
+
+-   **Hipoteza C (Wiek):** Szczyt wartości rynkowej zawodników przypada na przedział wiekowy 28–30 lat, po czym następuje stopniowy spadek wartości u graczy po 30. roku życia.
+
+### **2. Struktura narodowościowa a siła zespołu**
+
+**Pytanie badawcze***:* Czy odsetek Polaków w kadrze wpływa na średnią wartość zespołu oraz jego pozycję w lidze?
+
+-   **Hipoteza:** Mniejsza liczba Polaków w składzie oznacza wyższą średnią cene zawodnika zespołu. Drużyny z przewagą zawodników zagranicznych są wyceniane wyżej, gdyż obcokrajowcy częściej pełnią role kluczowych graczy w czołowych klubach Ekstraklasy.
+
+### **3. Efektywność ofensywna a wycena rynkowa**
+
+**Pytanie badawcze***:* Czy statystyki ofensywne (bramki i asysty) bezpośrednio przekładają się na wartość rynkową zawodników?
+
+-   **Hipoteza:** Same liczby (bramki i asysty) mają ograniczony wpływ na wartość zawodnika, jeśli nie są poparte odpowiednim wiekiem (potencjałem sprzedażowym). Starszy zawodnik z dużą liczbą goli może być tańszy od młodego talentu z gorszymi statystykami.
+
+### **4. Nierówność kadry a wynik sportowy**
+
+**Pytanie badawcze***:* Czy nierówność rozkładu wartości wewnątrz kadry wpływa na pozycję ligową zespołu?
+
+-   **Hipoteza:** Duże dysproporcje w wartościach zawodników (np. jedna gwiazda i słabi rezerwowi) wpływają negatywnie na wynik sportowy. Zespoły o bardziej wyrównanej kadrze („szeroka ławka”) zajmują wyższe miejsca w tabeli.
+
+### **5. Młodzieżowcy a doświadczenie**
+
+**Pytanie badawcze***:* Jak różnica w wartości rynkowej między grupą młodzieżowców a seniorami wpływa na pozycję ligową?
+
+-   **Hipoteza:** Zespoły, w których młodzieżowcy stanowią o sile wartości kadry (dodatnia różnica wartości U21 nad seniorami), zajmują niższe miejsca w tabeli. Wynika to z faktu, że młodzi zawodnicy, mimo wysokiego potencjału sprzedażowego, charakteryzują się większymi wahaniami formy niż doświadczeni seniorzy.
+
+# **Baza danych**
+
+Dane do projektu pobrałem z serwisu Transfermarkt, który jest jednym z najlepszych źródeł informacji o piłce nożnej. Ściągnąłem je automatycznie za pomocą scrapingu. Zbiór obejmuje wszystkich zawodników grających obecnie w PKO BP Ekstraklasie. Wybrałem tę stronę, ponieważ ich wyceny są uważane za wiarygodne i są często aktualizowane.
+
+Zgromadzona baza składa się z trzech głównych segmentów. Pierwszy obejmuje profil zawodnika (wiek, narodowość, pozycja, wartość rynkowa w euro), drugi zawiera statystyki indywidualne (gole, asysty, kartki), a trzeci dotyczy klubu i jego aktualnej pozycji w tabeli ligowej. Taka struktura pozwoliła na wielowymiarową analizę łączącą cechy demograficzne z efektywnością sportową.
+
+Surowe dane wymagały szeregu operacji przygotowawczych. W pierwszej kolejności dokonano konwersji typów zmiennych, zamieniając dane tekstowe na faktory oraz formatując wartości liczbowe. Aby zweryfikować hipotezę o wpływie pochodzenia na cenę, stworzono nową zmienną kategoryczną „Region”, mapując szczegółowe narodowości na odpowiednie kontynenty.
+
+W celu rzetelnego porównania zawodników o różnym wymiarze czasu gry, statystyki ofensywne zostały ustandaryzowane (przeliczone na 90 minut gry). Kluczowym elementem analizy finansowej było również wyliczenie współczynnika zmienności dla każdego zespołu. Miara ta posłużyła do matematycznego określenia poziomu nierówności wewnątrz kadry (tzw. kominów płacowych)
+
+# **Determinanty wartości rynkowej (Pozycja, Narodowość, Wiek)**
+
+Podstawowymi determinantami wartości rynkowej piłkarza są zazwyczaj pozycja na boisku oraz wiek. Mniej intuicyjnym czynnikiem wydaje się być narodowość – teoretycznie pochodzenie nie powinno wpływać na ocenę umiejętności. W praktyce jednak, narodowość często koreluje z pożądanymi cechami fizycznymi (np. motoryką) lub statusem w drużynie, co znajduje odzwierciedlenie w wycenach. Poniższa analiza weryfikuje te zależności na podstawie danych.
+
+```{r}
+library(rvest)
+library(dplyr)
+library(tidyverse)
+library(purrr)
+library(ggplot2)
+library(rio)
+library(httr)
+library(readr)
+library(readxl)
+library(scales)
+library(ggrepel)
+library(stringr)
+```
+
+```{r}
+#| label: pobieranie-danych-z-transfermarkt
+#| cache: true
+#| warning: false
+#| message: false
+#| echo: false
+
+zespol <- data.frame(
+  nazwa = c("gornik-zabrze", "jagiellonia-bialystok", "wisla-plock",
+           "rakow-czestochowa", "radomiak-radom", "cracovia",
+           "zaglebie-lubin", "lech-poznan", "korona-kielce",
+           "arka-gdynia", "legia-warszawa", "widzew-lodz",
+           "gks-katowice", "pogon-szczecin", "motor-lublin",
+           "lechia-gdansk", "bruk-bet-termalica-nieciecza", "piast-gliwice"),
+  id = c(428, 2300, 2118,
+         9644, 7154, 5689,
+         168, 238, 6110,
+         6107, 255, 88,
+         6456, 324, 3527,
+         4000, 15906, 6112),
+  stringsAsFactors = FALSE
+)
+zespol$link <- paste0(
+  "https://www.transfermarkt.pl/",
+  zespol$nazwa,
+  "/leistungsdaten/verein/",
+ zespol$id,
+  "/reldata/%262025/plus/1"
+)
+tabela <-data.frame()
+for (i in seq_len(nrow(zespol))) {
+  urll <- zespol$link[i]
+  nazwa_klubu <-zespol$nazwa[i]
+  
+  
+  
+ strona <- read_html(urll)
+ 
+ imie<- strona %>% 
+  html_nodes(css="span.hide-for-small") %>% 
+  html_text(trim =TRUE) 
+  imie<-imie[nzchar(imie)]
+  
+ 
+ flagal<-strona %>% 
+  html_nodes(xpath="//td/img[1]")
+narodowosc<- flagal %>% 
+  html_attr("title") 
+
+
+wystepyl<- strona %>% 
+  html_nodes(xpath="//table/tbody/tr/td[6]") %>% 
+  html_text() 
+wystepyl <- ifelse(wystepyl == "Bez występów w tym sezonie", 0, wystepyl)
+wystepyl <- suppressWarnings(as.numeric(wystepyl))
+wystepyl[is.na(wystepyl)] <- 0
+
+
+wiekl<- strona %>% 
+  html_nodes(xpath="//table/tbody/tr[contains(@class,'odd') or contains(@class,'even')]/td[3]") %>% 
+  html_text(trim=TRUE) 
+wiekl<-as.numeric(wiekl)
+
+
+bramkil<- strona %>% 
+  html_nodes(xpath="//table/tbody/tr[contains(@class,'odd') or contains(@class,'even')]/td[7]") %>% 
+  html_text(trim=TRUE) 
+bramkil<- ifelse(bramkil =="-",0,bramkil)
+bramkil<-as.numeric(bramkil)  
+
+
+minutyl<- strona %>% 
+  html_nodes(xpath="///table/tbody/tr/td[15]") %>% 
+  html_text(trim=TRUE)
+minutyl<- ifelse(minutyl =="-",0,minutyl)
+minutyl <- gsub("\\.", "", minutyl)
+minutyl <- gsub("'", "", minutyl)
+minutyl<-as.numeric(minutyl)
+
+pozycjal <- strona %>% 
+  html_nodes(css = "table.inline-table td") %>% 
+  html_text(trim = TRUE)
+pozycjal <- pozycjal[seq(3, length(pozycjal), by = 3)]
+pozycjal<-as.factor(pozycjal)
+
+profil_link <- strona %>% 
+  html_nodes(xpath="//tr/td[2]/div[1]/span/a") %>% 
+  html_attr("href")
+profil_link <- paste0("https://www.transfermarkt.pl", profil_link)
+
+wartosc <- c()
+
+obecna_wartosc <- function(x){
+    x <- gsub("\\s+Ostatnia zmiana:.*", "", x)
+    x[x == "" | is.na(x)] <- "0"
+    val <- ifelse(
+      grepl("tys", x),
+      suppressWarnings(as.numeric(sub(",", ".", sub(" tys. €", "", x))) / 1000),
+      suppressWarnings(as.numeric(sub(",", ".", sub(" mln €", "", x))))
+    )
+    val[is.na(val)] <- 0
+    return(val)
+}
+
+for (link in profil_link) {
+  Sys.sleep(0.1)  
+
+  pg <- GET(link, user_agent("Mozilla/5.0")) %>% read_html()
+  
+  val <- pg %>% 
+    html_node(xpath="//header/div[7]/a") %>% 
+    html_text(trim = TRUE)
+  
+  wartosc <- c(wartosc, val)
+}
+wartosc<-obecna_wartosc(wartosc)
+
+
+wartosc1<-c()
+
+for (link in profil_link) {
+  Sys.sleep(0.1)  
+
+  pg <- GET(link, user_agent("Mozilla/5.0")) %>% read_html()
+  
+  val5 <- pg %>% 
+    html_node(xpath="//header/div[6]/a") %>% 
+    html_text(trim = TRUE)
+  
+    wartosc1 <- c(wartosc1, val5)}
+          wartosc1<-obecna_wartosc(wartosc1)
+      
+          
+          wartosc3<-c()
+
+for (link in profil_link) {
+  Sys.sleep(0.1)  
+
+  pg <- GET(link, user_agent("Mozilla/5.0")) %>% read_html()
+  
+  val5 <- pg %>% 
+    html_node(xpath="//header/div[5]/a") %>% 
+    html_text(trim = TRUE)
+  
+    wartosc3 <- c(wartosc3, val5)}
+          wartosc3<-obecna_wartosc(wartosc3)    
+
+      wartosc2=wartosc+wartosc1+wartosc3
+
+
+      asysty <- strona %>% 
+  html_nodes(xpath = "//table/tbody/tr/td[8]") %>% 
+  html_text(trim = TRUE)
+asysty<- ifelse(asysty =="-",0,asysty)
+asysty<-as.numeric(asysty)
+      
+   
+      zolte <- strona %>% 
+  html_nodes(xpath = "//table/tbody/tr/td[9]") %>% 
+  html_text(trim = TRUE)
+zolte<- ifelse(zolte =="-",0,zolte)
+zolte<-as.numeric(zolte)
+
+   
+      czerwone1 <- strona %>% 
+  html_nodes(xpath = "//table/tbody/tr/td[10]") %>% 
+  html_text(trim = TRUE)
+czerwone1<- ifelse(czerwone1 =="-",0,czerwone1)
+czerwone1<-as.numeric(czerwone1)
+
+
+      czerwone2 <- strona %>% 
+  html_nodes(xpath = "//table/tbody/tr/td[11]") %>% 
+  html_text(trim = TRUE)
+czerwone2<- ifelse(czerwone2 =="-",0,czerwone2)
+czerwone2<-as.numeric(czerwone2)
+
+
+      czerwone <- czerwone1+czerwone2
+      
+      
+      zejscia <- strona %>% 
+  html_nodes(xpath = "//table/tbody/tr/td[13]") %>% 
+  html_text(trim = TRUE)
+zejscia<- ifelse(zejscia =="-",0,zejscia)
+zejscia<-as.numeric(zejscia)
+      
+
+      wejscia <- strona %>% 
+  html_nodes(xpath = "//table/tbody/tr/td[12]") %>% 
+  html_text(trim = TRUE)
+wejscia<- ifelse(wejscia =="-",0,wejscia)
+wejscia<-as.numeric(wejscia)
+
+
+
+
+tabelka<-data.frame(
+    klub=rep(nazwa_klubu, length(imie)),
+    imie=imie,
+    Wiek=wiekl,
+    Narodowość=narodowosc,
+    Pozycja=pozycjal,
+    Wartość=wartosc2,
+    Występy=wystepyl,
+    Bramki=bramkil,
+    Asysty=asysty,
+    Żółte_kartki=zolte,
+    Czerwone_kartki=czerwone,
+    Wejścia_na_boisko=wejscia,
+    Zejścia_z_boiska=zejscia,
+    Minuty=minutyl,
+    
+    stringsAsFactors = FALSE
+  )
+  
+
+tabela<-rbind(tabela,tabelka)
+  }
+```
+
+```{r}
+lik <- "https://www.ekstraklasa.org/tabela/sezon"
+response <- GET(lik, user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36")) 
+pagee <- read_html(response)
+```
+
+```{r}
+pozy<- pagee %>% 
+  html_nodes(css="span.w-4") %>% 
+  html_text() 
+pozy<-as.numeric(pozy)
+```
+
+```{r}
+klub<- pagee %>% 
+  html_nodes(xpath="//div/div[2]/app-league-standings-entry/div[1]/a/span[2]") %>% 
+  html_text() 
+pozy<-as.numeric(pozy)
+```
+
+```{r}
+zes<-c("wisla-plock","gornik-zabrze","jagiellonia-bialystok","rakow-czestochowa","zaglebie-lubin", "cracovia", "radomiak-radom","lech-poznan","korona-kielce","pogon-szczecin","motor-lublin","arka-gdynia","lechia-gdansk","piast-gliwice","widzew-lodz","gks-katowice","legia-warszawa","bruk-bet-termalica-nieciecza")
+wyg<- pagee %>% 
+  html_nodes(xpath="//div/div[2]/app-league-standings-entry/div[2]/span[3]") %>% 
+  html_text() 
+wyg<-as.numeric(wyg)
+
+remi<- pagee %>% 
+  html_nodes(xpath="//div/div[2]/app-league-standings-entry/div[2]/span[4]") %>% 
+  html_text() 
+remi<-as.numeric(remi)
+
+prze<- pagee %>% 
+  html_nodes(xpath="//div/div[2]/app-league-standings-entry/div[2]/span[5]") %>% 
+  html_text() 
+prze<-as.numeric(prze)
+
+pkt<- pagee %>% 
+  html_nodes(xpath="//div/div[2]/app-league-standings-entry/div[2]/span[2]") %>% 
+  html_text() 
+pkt<-as.numeric(pkt)
+
+l_me<- pagee %>% 
+  html_nodes(xpath="//div/div[2]/app-league-standings-entry/div[2]/span[1]") %>% 
+  html_text() 
+l_me<-as.numeric(l_me)
+
+ekstra<-data.frame(
+  klub=zes,
+  punkty_zesp=pkt,
+  mecze_zesp=l_me,
+  wygrane_zesp=wyg,
+  remisy_zesp=remi,
+  przegrane_zesp=prze
+  
+)
+```
+
+```{r}
+pelna_tabela <- left_join(tabela, ekstra, by = c("klub" = "klub"))
+```
+
+```{r}
+write.csv(unique(tabela$Narodowość), "lista_krajow.csv",row.names = FALSE, fileEncoding = "Windows-1250")
+```
+
+```{r}
+
+slownik <-read_excel("lista_krajow 1.xlsx")
+```
+
+```{r}
+library(dplyr)
+colnames(slownik) <- c("Narodowość", "Grupa")
+kontynenty <- left_join(tabela, slownik, by = "Narodowość")
+
+
+kontynenty<- kontynenty %>%
+  mutate(
+    Strefa = case_when(
+      Narodowość == "Polska" ~ "Polska",
+      TRUE ~ Grupa                        
+    )
+  )
+
+wynik_liczebnosc <- kontynenty %>%
+  count(Strefa) %>%          
+  arrange(desc(n))           
+
+
+```
+
+```{r}
+ranking_wartosci <- kontynenty %>% 
+  group_by(Strefa) %>%
+  summarise(
+    Srednia_Wartosc = mean(Wartość, na.rm = TRUE),  # Liczymy średnią (na.rm=TRUE ignoruje puste pola)
+    Liczba_Pilkarzy = n()                           # Przy okazji liczymy ilu ich jest
+  ) %>%
+  arrange(desc(Srednia_Wartosc))
+```
+
+```{r}
+ranking_pozycji <- kontynenty %>%
+  group_by(Pozycja) %>%  # Grupujemy po pozycji
+  summarise(
+    Srednia_Wartosc_pozycja = mean(Wartość, na.rm = TRUE), # Średnia cena
+    Liczba_Pilkarzy = n()                          # Ilu ich jest (żeby nie wyciągać wniosków z 1 osoby)
+  ) %>%
+  arrange(desc(Srednia_Wartosc_pozycja)) # Sortujemy od najdroższych
+ranking_pozycji <- ranking_pozycji %>%
+  filter(Pozycja != "Napastnik")
+```
+
+```{r}
+df_formacje <- kontynenty %>%
+  mutate(Formacja = case_when(
+    grepl("bramkarz", Pozycja, ignore.case = TRUE) ~ "Bramkarz",
+    grepl("obro", Pozycja, ignore.case = TRUE) ~ "Obrońca",
+    grepl("pomoc", Pozycja, ignore.case = TRUE) ~ "Pomocnik",
+    grepl("napast", Pozycja, ignore.case = TRUE) ~ "Napastnik",
+    TRUE ~ "Inne"
+  ))
+```
+
+```{r}
+library(scales)
+
+options(scipen = 999)
+df_wiek <- kontynenty %>%
+  mutate(
+    Grupa_Wiekowa = case_when(
+      Wiek <= 21 ~ "U-21 (Młodzież)",
+      Wiek >= 22 & Wiek <= 24 ~ "22-24 lata",
+      Wiek >= 25 & Wiek <= 27 ~ "25-27 lat ",
+      Wiek >= 28 & Wiek <= 30 ~ "28-30 lat",
+      Wiek > 30 ~ "30+ (Weterani)",
+      TRUE ~ "Inne"
+    )
+  )
+df_wiek$Grupa_Wiekowa <- factor(df_wiek$Grupa_Wiekowa, 
+                                levels = c("U-21 (Młodzież)", "22-24 lata", "25-27 lat ", "28-30 lat", "30+ (Weterani)"))
+```
+
+```{r}
+#| label: finalny-wykres-bez-pogrubien
+#| fig-width: 16
+#| fig-height: 13
+#| warning: false
+#| message: false
+
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(patchwork)
+
+base_font_size <- 18
+options(scipen = 999)
+
+p1 <- ggplot(df_formacje, aes(x = reorder(Formacja, Wartość, FUN = median), y = Wartość, fill = Formacja)) +
+  geom_violin(trim = TRUE, alpha = 0.4, color = NA) +
+  geom_boxplot(
+    width = 0.2, alpha = 0.8, 
+    outlier.shape = 21, outlier.fill = "red", outlier.colour = "black", outlier.size = 3
+  ) +
+  scale_y_log10(n.breaks = 5, labels = function(x) paste(comma(x), "mln €")) + 
+  scale_fill_brewer(palette = "Set1") +
+  labs(title = "1. Pozycja", x = "", y = "Wartość rynkowa") +
+  theme_minimal(base_size = base_font_size) +
+  theme(
+    legend.position = "none", 
+    panel.grid.minor = element_blank(),
+    # Usunięto face = "bold"
+    plot.title = element_text(size = 22),
+    axis.title.y = element_text(size = 20),
+    axis.text.x = element_text(angle = 20, hjust = 0.5, size = 16)
+  )
+
+df_kontynenty_clean <- kontynenty %>%
+  filter(!is.na(Strefa), Wartość > 0) %>%
+  group_by(Strefa) %>%
+  filter(n() > 10) %>% 
+  ungroup()
+
+p2 <- ggplot(df_kontynenty_clean, aes(x = reorder(Strefa, Wartość, FUN = median), y = Wartość, fill = Strefa)) +
+  geom_violin(trim = TRUE, alpha = 0.6, color = NA) +
+  geom_boxplot(
+    width = 0.2, 
+    alpha = 0.8, 
+    size = 0.6, 
+    outlier.shape = 21,
+    outlier.fill = "red",
+    outlier.colour = "black",
+    outlier.size = 3,
+    coef = 2
+  ) +
+  scale_y_log10(n.breaks = 5) + 
+  scale_fill_viridis_d(option = "plasma", begin = 0.2, end = 0.9) +
+  labs(title = "2. Region", x = "", y = "") +
+  theme_minimal(base_size = base_font_size) +
+  theme(
+    legend.position = "none", 
+    panel.grid.minor = element_blank(),
+    axis.text.y = element_blank(), 
+    # Usunięto face = "bold"
+    plot.title = element_text(size = 22),
+    axis.text.x = element_text(angle = 20, hjust = 0.5, size = 16)
+  )
+
+p3 <- ggplot(df_wiek %>% filter(Wartość > 0), aes(x = Grupa_Wiekowa, y = Wartość, fill = Grupa_Wiekowa)) +
+  geom_violin(trim = TRUE, alpha = 0.4, color = NA, width = 0.6) +
+  geom_boxplot(
+    width = 0.15, 
+    alpha = 0.9, 
+    size = 0.6, 
+    outlier.shape = 21,
+    outlier.fill = "red",
+    outlier.colour = "black",
+    outlier.size = 3,
+    coef = 1
+  ) +
+  scale_y_log10(n.breaks = 6, labels = function(x) paste(comma(x), "mln €")) + 
+  scale_fill_viridis_d(option = "turbo", begin = 0.1, end = 0.9) +
+  labs(title = "3. Wiek", x = "", y = "Wartość rynkowa") +
+  theme_minimal(base_size = base_font_size) + 
+  theme(
+    legend.position = "none", 
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank(),
+    # Usunięto face = "bold" ze wszystkich elementów poniżej
+    plot.title = element_text(size = 22),
+    axis.title.y = element_text(size = 20),
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 18, color = "black")
+  )
+
+final_plot <- (p1 + p2) / p3 +
+  plot_annotation(
+    title = 'Kompleksowa Analiza Wartości Rynkowej',
+    theme = theme(
+      plot.title = element_text(size = 30), 
+      plot.subtitle = element_text(size = 22, color = "gray40")
+    )
+  ) + 
+  plot_layout(heights = c(1, 1.2))
+
+print(final_plot)
+```
+
+**1. Pozycja na boisku** Analiza wykazała, że napastnicy są grupą o najwyższej medianie wartości, co jest zgodne z intuicją rynkową ("gole kosztują najwięcej"). Zaskakującym wnioskiem jest jednak fakt, że drugą najlepiej wycenianą formacją są obrońcy, wyprzedzający pomocników. Przeczy to hipotezie, że im bardziej ofensywna rola, tym wyższa cena. Na samym końcu zestawienia plasują się bramkarze, których wartość rynkowa jest najniższa.
+
+**2. Region pochodzenia** Rozkład wartości względem regionów przynosi interesujące obserwacje. Najwyższą medianę wartości osiągają zawodnicy z Afryki. Jest to dosyć oczywiste, ponieważ kluby Ekstraklasy rzadko ściągają graczy z zagranicy jedynie do „uzupełnienia składu”, celując raczej w zawodników o wysokim profilu motorycznym (czym gracze z Afryki często się wyróżniają) lub technicznym, którzy z miejsca podnoszą jakość zespołu. Z kolei Polska charakteryzuje się najniższą medianą wartości. Wynika to z szerokich kadr i dużej liczby młodych wychowanków o niskiej wycenie początkowej, którzy zaniżają wynik całej grupy narodowej.
+
+**3.Wiek zawodnika** Wykres dotyczący wieku przeczy hipotezie o największej wartości zawodników w wieku 28-30. Szczyt (tzw. "prime") przypada na przedział 25–27 lat, gdzie zawodnicy łączą doświadczenie z wciąż wysoką sprawnością fizyczną. Grupa młodzieżowców (U-21) charakteryzuje się największym rozwarstwieniem (długi kształt wykresu). Znajdują się w niej zarówno najdroższe talenty ligi (np. Oskar Pietuszewski), jak i debiutanci wyceniani na symboliczne kwoty.
+
+```{r}
+library(dplyr)
+
+ranking_sredniej <- kontynenty %>%
+  filter(!is.na(Wartość) & Wartość > 0) %>%
+  
+  group_by(klub) %>%
+  
+  summarise(
+    Liczba_Pilkarzy = n(),
+    Srednia_Wartosc = mean(Wartość, na.rm = TRUE)
+  ) %>%
+  filter(Liczba_Pilkarzy >= 10) %>%
+
+  arrange(desc(Srednia_Wartosc))
+```
+
+# **Struktura narodowościowa a siła zespołu**
+
+Analiza składów drużyn Ekstraklasy ujawnia dwa skrajnie modele budowania kadry. Z jednej strony obserwujemy kluby, które swoją strategię opierają na Polakach, stawiając na wychowanków i promując młodzieżowców (co często wiąże się z niższym budżetem płacowym). Z drugiej w niektórych zespołach podstawowa jedenastka zdominowana jest przez obcokrajowców, a liczba Polaków na boisku ogranicza się niekiedy do niezbędnego minimum wymaganego przepisami.
+
+Poniższy wykres bada, jak te strategie przekładają się na twarde dane. Wizualizacja zestawia średnią wartość rynkową piłkarza w danym klubie z zajmowanym miejscem w lidze (numer w kółku), dodatkowo kodując kolorem odsetek Polaków w kadrze. Pozwala to odpowiedzieć na pytanie, czy wysoki udział rodzimych graczy obniża średnią wartość zespołu i czy drużyny "zagraniczne" faktycznie gwarantują wyższą jakość sportową, przekładającą się na czołowe lokaty w tabeli.
+
+```{r}
+library(dplyr)
+
+
+kluby_polacy <- kontynenty %>%
+  group_by(klub) %>%
+  summarise(
+    Wszyscy_Pilkarze = n(),
+    Liczba_Polakow = sum(Narodowość == "Polska", na.rm = TRUE), 
+    Odsetek_Polakow = round((Liczba_Polakow / Wszyscy_Pilkarze) * 100, 1)
+  ) %>%
+  arrange(desc(Odsetek_Polakow))
+```
+
+```{r}
+df_wykres_18 <- kontynenty %>%
+  filter(!is.na(Wartość) & Wartość > 0) %>%
+  group_by(klub) %>%
+  summarise(
+    Liczba_Pilkarzy = n(),
+    Liczba_Polakow = sum(Narodowość == "Polska", na.rm = TRUE), 
+    Srednia_Wartosc = mean(Wartość, na.rm = TRUE)
+  ) %>%
+  mutate(Odsetek_Polakow = (Liczba_Polakow / Liczba_Pilkarzy) * 100)
+
+```
+
+```{r}
+
+ekstra_z_pozycja <- ekstra %>%
+  mutate(Pozycja = row_number())
+
+df_final <- left_join(df_wykres_18, ekstra_z_pozycja, by = "klub")
+
+ggplot(df_final, aes(x = reorder(klub, Srednia_Wartosc), y = Srednia_Wartosc)) +
+
+  geom_segment(aes(xend = reorder(klub, Srednia_Wartosc), 
+                   y = 0, yend = Srednia_Wartosc), 
+               color = "gray85", size = 1.2) +
+
+  geom_point(aes(fill = Odsetek_Polakow), 
+             color = "white", 
+             stroke = 0.5,    
+             shape = 21,      
+             size = 8) +     
+
+  geom_text(aes(label = Pozycja, 
+                color = ifelse(Odsetek_Polakow > 60, "black", "white")), 
+            fontface = "bold", 
+            size = 4) +
+
+  geom_text(aes(label = paste(round(Srednia_Wartosc, 2), "mln")), 
+            hjust = -0.4, size = 3.5, fontface = "bold", color = "gray40") +
+  
+  scale_fill_viridis_c(option = "inferno", direction = 1, name = "% Polaków") +
+
+  scale_color_identity() + 
+
+  coord_flip() +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.2))) +
+  
+  labs(
+    title = "Finanse a Tabela Ligowa",
+    subtitle = "Numer w kółku = Miejsce w lidze",
+    x = "", 
+    y = "Średnia wartość piłkarza (mln €)"
+  ) +
+  
+  theme_minimal() +
+  theme(
+     plot.title = element_text(size = 17),
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_text(size = 11, face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+Z wykresu jasno wynika, że zespoły z mniejszym udziałem Polaków osiągają wyższą średnią wartość rynkową. Jest to naturalna konsekwencja strategii kadrowej – mniejsza liczba wychowanków (często nisko wycenianych na początku kariery) statystycznie podwyższa średnią wycenę piłkarza w klubie.
+
+W kwestii wyników sportowych zależność nie jest jednak tak oczywista. Choć w czołowej ósemce (z wyjątkiem Zagłębia Lubin) dominują drużyny oparte na obcokrajowcach, to w dolnej połowie tabeli brakuje wyraźnej reguły. O utrzymanie walczą zarówno zespoły z dużą liczbą Polaków, jak i te z przewagą graczy zagranicznych, co sugeruje, że sama narodowość kadry nie gwarantuje sukcesu sportowego.
+
+```{r}
+df_skutecznosc <- kontynenty %>%
+  filter(grepl("Napastnik", Pozycja, ignore.case = TRUE)) %>%
+  
+  filter(Minuty > 300, Bramki > 1, Asysty>0) %>%
+  
+  mutate(Minuty_na_Gola = Minuty /(Asysty+ Bramki)) %>% 
+  mutate(Nazwisko_Tylko = stringr::word(imie, -1))
+```
+
+# **Efektywność ofensywna a wycena rynkowa**
+
+W piłce nożnej to bramki i końcowe wyniki budzą największe emocje. Kibice rzadziej pamiętają kluczową interwencję obrońcy miesiąc po meczu, ale doskonale wspominają strzelone gole. Rodzi się więc naturalne pytanie: skoro to bramki i asysty stanowią o istocie tego sportu, to czy mają one bezpośrednie przełożenie na wartość rynkową zawodnika?
+
+Intuicja podpowiada, że odpowiedź powinna być twierdząca. Skoro to ofensywne statystyki decydują o zwycięstwach, zawodnicy, którzy je generują – strzelając bramki lub otwierając drogę do bramki kolegom – powinni być wyceniani najwyżej. Poniższy wykres weryfikuje tę hipotezę, sprawdzając, czy częstotliwość udziału w akcjach bramkowych (mierzona w minutach potrzebnych na gola lub asystę) rzeczywiście determinuje cenę piłkarza.
+
+```{r}
+ggplot(df_skutecznosc, aes(x = Minuty_na_Gola, y = Wartość)) +
+  
+
+  geom_point(aes(color = Wiek, size = Bramki), alpha = 0.7) +
+
+  geom_smooth(method = "loess", color = "red", linetype = "dashed", se = FALSE) +
+  
+  scale_y_log10(labels = function(x) paste(x, "mln")) + # Logarytm dla ceny
+
+  scale_color_viridis_c(option = "turbo", direction = -1, name = "Wiek") +
+
+  labs(
+    title = "Czy bramki i asysty dają pieniądze?",
+    x = "Co ile minut asystyuje lub strzela bramke",
+    y = "Wartość rynkowa ",
+    size = "Bramki i asysty"
+  ) +
+  
+  theme_minimal() +
+  theme(
+     plot.title = element_text(size = 17),
+    legend.position = "right"
+  )
+```
+
+Wstępna analiza wykresu może sugerować tendencję sprzeczną z intuicją, jednak „anomalia” widoczna przy niskiej efektywności (powyżej 300 minut na gola/asystę) ma logiczne uzasadnienie. Odpowiada za nią tzw. wartość odstająca w postaci 17-letniego Oskara Pietuszewskiego. Jego wysoka wycena rynkowa bazuje na gigantycznym potencjale, a nie bieżących statystykach, co zaburza ogólny trend. Po wyłączeniu tego wyjątku dane potwierdzają naszą hipotezę: same liczby ofensywne mają ograniczony wpływ na wartość zawodnika, często ustępując miejsca kryterium wieku i talentu
+
+```{r}
+df_wyrownanie <- kontynenty %>%
+  left_join(ekstra_z_pozycja, by = "klub")
+
+```
+
+```{r}
+df_wyrownanie <- kontynenty %>%
+
+  left_join(ekstra_z_pozycja, by = "klub") %>% 
+
+  
+  group_by(klub) %>%
+  summarise(
+    Pozycja_w_lidze = mean(Pozycja.y, na.rm = TRUE), 
+    
+    Srednia_Wartosc = mean(Wartość, na.rm = TRUE),
+
+    Odchylenie = sd(Wartość, na.rm = TRUE),
+
+    Nierownosc_Kadry = (Odchylenie / Srednia_Wartosc) * 100
+  ) %>%
+  arrange(Pozycja_w_lidze)
+```
+
+# **Nierówność kadry a wyniki**
+
+Specyfiką Ekstraklasy jest duża różnorodność strategii budowania kadry. Część klubów dąży do stworzenia wyrównanego kolektywu , kontraktując zawodników o zbliżonym poziomie, aby uniknąć słabych punktów. Inne zespoły przyjmują odmienną taktykę, inwestując większość budżetu w indywidualne gwiazdy, co często odbywa się kosztem jakości reszty składu. Poniższa analiza ma na celu sprawdzenie, która z tych dróg skuteczniej prowadzi do zdobycia mistrzostwa Polski.
+
+```{r}
+ggplot(df_wyrownanie, aes(x = Pozycja_w_lidze, y = Nierownosc_Kadry)) +
+  
+  geom_point(aes(size = Srednia_Wartosc, fill = Nierownosc_Kadry), 
+             shape = 21, color = "black", stroke = 0.5, alpha = 0.9) +
+  
+  geom_smooth(method = "lm", color = "red", linetype = "dashed", se = FALSE) +
+  
+  geom_text_repel(aes(label = klub), size = 3, fontface = "bold", box.padding = 0.5) +
+  
+  scale_size_continuous(range = c(3, 10), name = "Śr. Wartość (mln)") +
+  scale_fill_viridis_c(option = "inferno", direction = -1, name = "Nierówność (%)") +
+
+  scale_x_continuous(breaks = 1:18, trans = "reverse") + 
+  
+  labs(
+    title = "Nierówność kadry a wynik sportowy",
+    subtitle = "Im wyżej kropka, tym większe kominy płacowe w klubie.",
+    x = "Miejsce w tabeli ",
+    y = "Nierówność kadry (CV %)"
+  ) +
+  
+  theme_minimal() +
+  theme(legend.position = "right",
+         plot.title = element_text(size = 17))
+```
+
+Z wykresu wynika, że im wyższa pozycja w tabeli, tym większa nierówność kadry. Jest to częściowo efekt naturalnych różnic rynkowych – kluczowi napastnicy są zazwyczaj wyceniani znacznie wyżej niż rezerwowi obrońcy. Na szczególne wyróżnienie zasługują jednak Lech Poznań i Raków Częstochowa. Kluby te łączą bardzo wysoką średnią wartość piłkarzy z niską nierównością, co świadczy o budowie silnego i wyrównanego zespołu. Odwrotną strategię, opartą na dużych kominach płacowych, obserwujemy w Zagłębiu Lubin i Pogoni Szczecin.
+
+# **Młodzieżowcy a doświadczenie**
+
+Z perspektywy ekonomicznej kluby piłkarskie stoją przed strategicznym wyborem modelu biznesowego. Pierwsza ścieżka to maksymalizacja wyniku sportowego i czerpanie zysków z nagród oraz praw telewizyjnych – strategia ta premiuje kadry oparte na doświadczonych seniorach, gwarantujących stabilizację formy. Druga ścieżka to model „inkubatora”, nastawiony na promocję i zyskowną sprzedaż młodych talentów, co często odbywa się kosztem bieżących wyników w lidze.
+
+Najlepszym wyborem jest połączenie obu tych podejść (na wzór np. FC Barcelony czy Ajaksu Amsterdam), czyli osiąganie sukcesów przy jednoczesnym wprowadzaniu drogiej młodzieży. Poniższy wykres weryfikuje, czy w realiach Ekstraklasy taki kompromis jest możliwy. Wizualizacja przedstawia różnice w średniej wartości rynkowej między grupą młodzieżowców (U21 - kropki zielone) a seniorami (22+ - kropki szare) w poszczególnych zespołach.
+
+```{r}
+df_hantle_roznica <- kontynenty %>%
+  filter(!is.na(Wartość), Wartość > 0, !is.na(Wiek)) %>%
+  
+  mutate(Kategoria = ifelse(Wiek <= 21, "U21", "Seniorzy")) %>%
+  
+  group_by(klub, Kategoria) %>%
+  
+  summarise(Srednia = mean(Wartość, na.rm = TRUE)) %>%
+  
+  pivot_wider(names_from = Kategoria, values_from = Srednia) %>%
+  
+  filter(!is.na(U21), !is.na(Seniorzy)) %>%
+  
+  mutate(Roznica = U21 - Seniorzy) %>%
+
+  arrange(desc(Roznica))
+
+```
+
+```{r}
+kolejnosc_z_tabeli <- ekstra %>%
+  arrange(desc(punkty_zesp)) %>% 
+  pull(klub)                     
+df_hantle_roznica$klub <- factor(df_hantle_roznica$klub, levels = rev(kolejnosc_z_tabeli))
+
+ggplot(df_hantle_roznica, aes(x = Seniorzy, xend = U21, y = klub)) +
+
+  geom_segment(aes(yend = klub, color = Roznica > 0), size = 1, show.legend = FALSE) +
+
+  geom_point(aes(x = Seniorzy, color = "Seniorzy (22+)"), size = 3) + 
+  geom_point(aes(x = U21, color = "Młodzież (U21)"), size = 4) +
+
+  geom_text(aes(x = (Seniorzy + U21)/2, label = round(Roznica, 2)), 
+            vjust = -0.8, size = 3, fontface = "bold", color = "black") +
+
+  scale_color_manual(
+    name = "Legenda",
+    values = c("TRUE" = "#00C853", "FALSE" = "gray80", "Młodzież (U21)" = "#00C853", "Seniorzy (22+)" = "gray60"),
+    breaks = c("Młodzież (U21)", "Seniorzy (22+)") 
+  ) +
+
+  scale_y_discrete(expand = expansion(mult = 0.1)) + 
+
+  labs(
+    title = "Akademia czy doświadczenie?",
+    subtitle = "Zespoły posortowane według pozycji w lidze",
+    x = "Średnia Wartość (mln €)",
+    y = ""
+  ) +
+  
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    panel.grid.major.y = element_blank(),
+    axis.text.y = element_text(face = "bold", size = 10),
+     plot.title = element_text(size = 17)
+  )
+```
+
+Analiza wykresu wskazuje, że Jagiellonia Białystok jest najbliższa realizacji optymalnego modelu łączącego wynik sportowy z promocją talentów. Choć średnią wartość grupy U-21 w tym klubie znacząco zawyża Oskar Pietuszewski, nie zmienia to faktu, że Jagiellonia mimo wysokiej pozycji w lidze konsekwentnie stawia na młodych graczy. Na szczególne wyróżnienie zasługuje również lider zestawienia – Wisła Płock. Mimo kadry o niższej ogólnej wartości, klub ten notuje dodatni bilans na korzyść młodzieży, co w połączeniu z pierwszym miejscem w tabeli jest ogromnym sukcesem.
+
+Wyraźne zainteresowanie młodymi talentami widać także w Zagłębiu Lubin, Pogoni Szczecin i Legii Warszawa, jednak w ich przypadku wysoki potencjał sprzedażowy nie idzie obecnie w parze z wynikiem sportowym.
+
+Co kluczowe, wykres nie potwierdza istnienia negatywnej korelacji między stawianiem na młodzież a miejscem w tabeli. Oznacza to, że obecność drogich młodzieżowców w składzie nie skazuje zespołu na walkę o utrzymanie.
+
+# **Podsumowanie**
+
+Przeprowadzona analiza pokazuje, że PKO BP Ekstraklasa to liga o dwóch obliczach. Z jednej strony zyskuje na rozpoznawalności, a o jej poziomie sportowym "tu i teraz" decydują głównie doświadczeni obcokrajowcy. Z drugiej strony, dla polskich piłkarzy nasza liga pełni funkcję "okna wystawowego" na Zachód, choć – jak widać w danych – wcale nie jest to typowa liga dla młodzieży, bo w wielu klubach młodzi gracze są mniejszością.
+
+Głównymi czynnikami wpływającymi na cenę zawodnika okazały się wiek oraz pozycja na boisku. Projekt pokazał wyraźną różnicę w podejściu do wycen: za starszych graczy płaci się za ich obecne umiejętności i statystyki, natomiast walutą w przypadku młodzieżowców jest "potencjał". Jest to cecha trudna do zmierzenia w liczbach, bo opiera się na przewidywaniu, jak zawodnik rozwinie się w przyszłości.
+
+Podsumowując, Ekstraklasa to liga szukająca równowagi między wynikiem sportowym (który często dają obcokrajowcy) a zarabianiem pieniędzy na sprzedaży młodych talentów.
