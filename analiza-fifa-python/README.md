@@ -8,14 +8,14 @@ Projekt poświęcony analizie atrybutów piłkarzy w grze FIFA 22 w celu zbudowa
 
 ## Zakres analizy
 * Porównanie parametrów fizycznych i technicznych piłkarzy w zależności od pozycji na boisku oraz kraju pochodzenia.
-* Analiza wieku, oceny ogólnej (Overall), potencjału oraz logarytmicznego rozkładu wartości rynkowej.
+* Analiza wieku, oceny ogólnej (Overall), potencjału oraz rozkładu wartości rynkowej.
 * Identyfikacja kluczowych atrybutów wpływających na cenę zawodników.
 * Weryfikacja hipotez statystycznych:
   * Test Shapiro-Wilka (badanie normalności rozkładu wyceny).
   * Test t-Studenta (porównanie wartości lewych i prawych obrońców).
   * Test Manna-Whitneya (porównanie umiejętności napastników i środkowych obrońców).
-* **Modelowanie predykcyjne:** Budowa i ewaluacja modeli uczenia maszynowego szacujących wartość rynkową graczy.
+* Budowa i ewaluacja modeli uczenia maszynowego szacujących wartość rynkową graczy.
 
 ## Opis plików
-* `predykcja_fifa.ipynb` – notebook z pełnym kodem (analiza danych, wykresy, testy statystyczne i modele ML).
-* `FIFA 22.csv` – zbiór danych zawierający kompletne statystyki piłkarzy.
+* `predykcja_fifa.ipynb` – notebook z pełnym kodem.
+* `FIFA 22.csv` – zbiór danych zawierający kompletne statystyki piłkarzy pobrany z Kaggle.
