@@ -10,10 +10,7 @@ Projekt poświęcony analizie atrybutów piłkarzy w grze FIFA 22 w celu zbudowa
 * Porównanie parametrów fizycznych i technicznych piłkarzy w zależności od pozycji na boisku oraz kraju pochodzenia.
 * Analiza wieku, oceny ogólnej (Overall), potencjału oraz rozkładu wartości rynkowej.
 * Identyfikacja kluczowych atrybutów wpływających na cenę zawodników.
-* Weryfikacja hipotez statystycznych:
-  * Test Shapiro-Wilka (badanie normalności rozkładu wyceny).
-  * Test t-Studenta (porównanie wartości lewych i prawych obrońców).
-  * Test Manna-Whitneya (porównanie umiejętności napastników i środkowych obrońców).
+* Weryfikacja hipotez statystycznych.
 * Budowa i ewaluacja modeli uczenia maszynowego szacujących wartość rynkową graczy.
 
 ## Opis plików
