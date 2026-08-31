@@ -12,6 +12,6 @@ Projekt sprawdzający wpływ czynników na wartość rynkową piłkarzy grający
 * Analiza wpływu nierówności wyceny kadry na wyniki sportowe zespołów w Ekstraklasie.
 
 ## Opis plików
-* `analiza-ekstraklasa.html` - gotowy, interaktywny raport z wykresami i wnioskami (do pobrania i otwarcia w przeglądarce).
+* `analiza-ekstraklasa.html` - gotowy, interaktywny raport z wykresami i wnioskami.
 * `analiza-ekstraklasa.qmd` - kod źródłowy projektu w Quarto / RStudio.
-* `lista_krajow.csv` - zbiór danych zeskrapowany z portalu Transfermarkt.
+* `lista_krajow.csv` - słownik.
