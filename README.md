@@ -2,7 +2,7 @@
 
 Repozytorium zawiera projekty analityczne, raporty oraz modele predykcyjne z obszaru analityki sportowej.
 
-## 📌 Zawartość repozytorium
+## Zawartość repozytorium
 
 ### 1. [Analiza zawodników i predykcja wartości w FIFA 22](./analiza-fifa-python)
 * **Technologie:** Python
