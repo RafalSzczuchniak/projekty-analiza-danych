@@ -1,7 +1,6 @@
 # Analiza zawodników i predykcja wartości w FIFA 22
 
-Projekt dedykowany analizie atrybutów piłkarzy w grze FIFA 22, weryfikacji hipotez statystycznych oraz budowie modeli uczenia maszynowego prognozujących wartość rynkową zawodników.
-
+Projekt poświęcony analizie atrybutów piłkarzy w grze FIFA 22 w celu zbudowania modelu predykcyjnego.
 ## Technologie i narzędzia
 * **Język:** Python
 * **Środowisko:** Jupyter Notebook (`.ipynb`), VS Code
