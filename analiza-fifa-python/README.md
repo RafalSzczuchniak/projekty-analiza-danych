@@ -14,5 +14,5 @@ Projekt poświęcony analizie atrybutów piłkarzy w grze FIFA 22 w celu zbudowa
 * Budowa i ewaluacja modeli uczenia maszynowego szacujących wartość rynkową graczy.
 
 ## Opis plików
-* `predykcja_fifa.ipynb` – notebook z pełnym kodem.
-* `FIFA 22.csv` – zbiór danych zawierający kompletne statystyki piłkarzy pobrany z Kaggle.
+* `predykcja_fifa.ipynb` - notebook z pełnym kodem.
+* `FIFA 22.csv` - zbiór danych zawierający kompletne statystyki piłkarzy pobrany z Kaggle.
