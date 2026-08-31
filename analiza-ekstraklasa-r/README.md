@@ -1,6 +1,6 @@
 # Analiza zawodników Ekstraklasy
 
-Projekt sprawdzający wpływ czynników na wartość rynkową piłkarzy grających w polskiej Ekstraklasie na podstawie danych pozyskanych z serwisu Transfermarkt.
+Projekt sprawdzający wpływ czynników oddziałowywujących na wartość rynkową piłkarzy grających w polskiej Ekstraklasie na podstawie danych pozyskanych z serwisu Transfermarkt.
 
 ## Technologie i narzędzia
 * **Język:** R
