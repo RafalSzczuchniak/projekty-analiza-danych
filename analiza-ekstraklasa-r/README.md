@@ -16,6 +16,6 @@ Projekt sprawdzający wpływ czynników na wartość rynkową piłkarzy grający
 * Analiza relacji średniej wartości graczy młodzieżowych do seniorów oraz jej wpływu na końcową pozycję klubu w tabeli.
 
 ## Opis plików
-* `analiza-ekstraklasa.html` - gotowy, interaktywny raport z wykresami i wnioskami.
+* `analiza-ekstraklasa.html` - gotowy raport z wykresami i wnioskami.
 * `analiza-ekstraklasa.qmd` - kod źródłowy projektu w Quarto / RStudio.
 * `lista_krajow.csv` - słownik.
