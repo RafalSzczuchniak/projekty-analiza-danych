@@ -10,7 +10,7 @@ Projekt sprawdzający wpływ czynników oddziałowywujących na wartość rynkow
 ## Zakres analizy
 
 * Badanie, jak pozycja na boisku, wiek oraz narodowość wpływają na wycenę piłkarzy.
-* Ocena, czy drużyny z większą liczbą zawodników zagranicznych osiągają wyższą średnią wartość kadry i lepsze miejsca w tabeli.
+* Ocena, czy drużyny z większą liczbą zawodników zagranicznych osiągają wyższą średnią wartość kadry oraz lepsze miejsca w tabeli.
 * Analiza przełożenia bramek i asyst na cenę rynkową.
 * Weryfikacja, czy i jak duże dysproporcje w wycenie zawodników wpływają na wyniki zespołów.
 * Analiza relacji średniej wartości graczy młodzieżowych do seniorów oraz jej wpływu na końcową pozycję klubu w tabeli.
