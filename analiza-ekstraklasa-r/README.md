@@ -7,7 +7,7 @@ Projekt sprawdzający wpływ czynników na wartość rynkową piłkarzy grający
 * **Raportowanie:** Quarto (`.qmd`), HTML
 * **Metody:** Web scraping, czyszczenie danych, wizualizacja, wnioskowanie statystyczne
 
-## 📊 Zakres analizy
+## Zakres analizy
 
 * Badanie, jak pozycja na boisku, wiek oraz narodowość wpływają na wycenę piłkarzy.
 * Ocena, czy drużyny z większą liczbą zawodników zagranicznych osiągają wyższą średnią wartość kadry i lepsze miejsca w tabeli.
